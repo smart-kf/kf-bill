@@ -49,10 +49,8 @@ const loginRules: Record<string, Rule[]> = {
 
 const loginHandle = async () => {
   let params = {
-    captchaCode: '',
-    captchaId: '',
-    cardID: formData.cardID,
-    password: ''
+    userNum: formData.userNum,
+    password: formData.password
   }
   state.loading = true
   let { code, data, message }: any = await UserApi.userLogin(params)

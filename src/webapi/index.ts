@@ -1,6 +1,6 @@
 import * as UserApi from './user'
-import * as QrcodeApi from './qrcode'
-import * as SystemApi from './system'
-import * as ChatApi from './chat'
+import * as CardApi from './card'
+import * as DomainApi from './domain'
+import * as OrderApi from './order'
 
-export { UserApi, QrcodeApi, SystemApi, ChatApi }
+export { UserApi, CardApi, DomainApi, OrderApi }

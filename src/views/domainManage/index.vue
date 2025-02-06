@@ -2,7 +2,7 @@
 <template>
   <div class="kf-body">
     <div class="top-action">
-      <a-button type="primary" @click="onAddMsg">添加欢迎语</a-button>
+      <a-button type="primary" @click="onAddMsg">新增域名</a-button>
       <div @click="onRefesh">
         <span class="refesh">
           <ReloadOutlined />
@@ -11,34 +11,14 @@
     </div>
     <a-table bordered :data-source="state.dataSource" :columns="columns" size="middle">
       <template #bodyCell="{ column, text, record }">
-        <template v-if="column.dataIndex === 'content'">
-          <template v-if="record.contentType === 'video'">
-            <span>{{ record.content }}</span>
-          </template>
-          <template v-else-if="record.contentType === 'image'">
-            <a-image :width="100" :height="100" :src="record.content" :fallback="failImg" />
-          </template>
-          <template v-else>
-            <span>{{ record.content }}</span>
-          </template>
-        </template>
-        <template v-if="column.dataIndex === 'sendSort'">
-          <a-input-number id="inputNumber" v-model:value="record.sendSort" :min="1" :max="9999" />
-        </template>
-        <template v-if="column.dataIndex === 'status'">
-          <a-switch v-model:checked="record.status" />
-        </template>
         <template v-if="column.dataIndex === 'operation'">
           <a-space>
-            <span class="table-link-action" @click="onEdit(record)"> <EditOutlined />修改 </span>
-            <a-popconfirm title="确定要删除吗？" @confirm="onDelete(record)">
-              <span class="table-link-action"> <DeleteOutlined />删除 </span>
-            </a-popconfirm>
+            <span class="table-link-action" @click="onEdit(record)"> 回收 </span>
           </a-space>
         </template>
       </template>
     </a-table>
-    <MaterialDrawer v-model:model-value="state.showDia" :action-type="state.actionType" :edit-data="state.editData"></MaterialDrawer>
+    <AddModal v-model:model-value="state.showDia" :action-type="state.actionType"></AddModal>
   </div>
 </template>
 
@@ -46,10 +26,9 @@
 import { computed, ref, onMounted, reactive } from 'vue'
 import { h } from 'vue'
 import { ReloadOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons-vue'
-import MaterialDrawer from '@/components/MaterialDrawer/index.vue'
-import { message } from 'ant-design-vue'
+import { message as Message } from 'ant-design-vue'
+import AddModal from './components/addModal/index.vue'
 import logo from '@/assets/defaultUser.png'
-import failImg from '@/assets/failImg.png'
 
 const state = reactive({
   dataSource: [],
@@ -61,41 +40,54 @@ const state = reactive({
 
 const columns = [
   {
-    title: '回复内容',
-    key: 'content',
+    title: '域名',
+    key: 'topName',
+    fixed: 'left',
     align: 'center',
-    dataIndex: 'content'
+    dataIndex: 'topName'
   },
   {
-    title: '发送顺序(小到大)',
-    key: 'sendSort',
+    title: '是否公共域名',
+    key: 'isPublic',
     align: 'center',
-    dataIndex: 'sendSort',
-    width: 200
+    dataIndex: 'isPublic'
   },
   {
-    title: '是否启用',
+    title: '是否有卡密绑定',
+    align: 'center',
+    dataIndex: 'isBind',
+    key: 'isBind'
+  },
+  {
+    title: '状态',
     align: 'center',
     dataIndex: 'status',
-    key: 'status',
-    width: 200
+    key: 'status'
+  },
+  {
+    title: '创建时间',
+    align: 'center',
+    dataIndex: 'createTime',
+    key: 'createTime'
   },
   {
     title: '操作',
     align: 'center',
+    fixed: 'right',
     dataIndex: 'operation',
-    width: 200
+    width: 100
   }
 ]
 
 const onRefesh = () => {
   console.log(222)
 }
-// 新增欢迎语
+// 新增卡密ID
 const onAddMsg = () => {
   state.actionType = 'add'
   state.showDia = true
 }
+const onOK = () => {}
 const onEdit = (item) => {
   state.actionType = 'edit'
   state.editData = item
@@ -107,33 +99,32 @@ const onDelete = (item) => {
 }
 
 const initData = () => {
-  state.dataSource = [
-    {
-      id: 1,
-      content: '文本',
-      sendSort: 1,
-      contentType: 'text',
-      status: true,
-      updateTime: '2024-13-13 13:13:13'
-    },
-    {
-      id: 2,
-      content: logo,
-      sendSort: 2,
-      contentType: 'image',
-      status: true,
-      updateTime: '2024-13-13 13:13:13'
-    },
-    {
-      id: 3,
-      content: '视频',
-      sendSort: 3,
-      contentType: 'video',
-      status: false,
-      updateTime: '2024-13-13 13:13:13'
-    }
-  ]
-  console.log(state)
+  // state.dataSource = [
+  //   {
+  //     id: 1,
+  //     content: '文本',
+  //     sendSort: 1,
+  //     contentType: 'text',
+  //     status: true,
+  //     updateTime: '2024-13-13 13:13:13'
+  //   },
+  //   {
+  //     id: 2,
+  //     content: logo,
+  //     sendSort: 2,
+  //     contentType: 'image',
+  //     status: true,
+  //     updateTime: '2024-13-13 13:13:13'
+  //   },
+  //   {
+  //     id: 3,
+  //     content: '视频',
+  //     sendSort: 3,
+  //     contentType: 'video',
+  //     status: false,
+  //     updateTime: '2024-13-13 13:13:13'
+  //   }
+  // ]
 }
 
 onMounted(() => {

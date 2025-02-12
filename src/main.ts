@@ -17,6 +17,7 @@ import DisableDevTool from '@/utils/disable-devtool'
 import VueQrcode from 'vue-qrcode'
 
 // 开发环境暂时放开
+
 if (!import.meta.env.DEV) {
   new DisableDevTool().init()
 }

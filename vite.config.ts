@@ -14,7 +14,7 @@ export default defineConfig(({ mode }) => {
       port: 8080,
       proxy: {
         '/api': {
-          target: 'https://api.smartkf.top/', // 本地调试
+          target: 'https://bill.smartkf.top/', // 本地调试
           changeOrigin: true
           // rewrite: (path) => path.replace(/^\/api/, '')
         }

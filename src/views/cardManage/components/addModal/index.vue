@@ -3,25 +3,22 @@
     <div>
       <a-form id="formLogin" ref="formRef" :model="formData" :rules="formRules">
         <a-form-item name="cardType" label="卡号类型">
-          <a-select v-model:value="formData.cardType" placeholder="please select your zone" style="width: 80%">
-            <a-select-option value="shanghai">类型1</a-select-option>
-            <a-select-option value="beijing">类型2</a-select-option>
-          </a-select>
+          <a-select v-model:value="formData.cardType" placeholder="请选择卡号类型" style="width: 80%" :options="state.typeOptions"> </a-select>
         </a-form-item>
         <a-form-item name="days" label="有效天数">
           <div>
             <a-space>
               <a-input-number v-model:value="formData.days" :min="1" :max="100" style="width: 100%" />
-              <a-button>7天</a-button>
-              <a-button>30天</a-button>
+              <a-button @click="setValue('days', 7)">7天</a-button>
+              <a-button @click="setValue('days', 30)">30天</a-button>
             </a-space>
           </div>
         </a-form-item>
         <a-form-item name="num" label="生成数量">
           <a-space>
             <a-input-number v-model:value="formData.num" :min="1" :max="200" style="width: 100%" />
-            <a-button>50</a-button>
-            <a-button>100</a-button>
+            <a-button @click="setValue('num', 50)">50</a-button>
+            <a-button @click="setValue('num', 100)">100</a-button>
           </a-space>
         </a-form-item>
       </a-form>
@@ -33,8 +30,8 @@
 import { ref, defineProps, onMounted, computed, reactive, watch } from 'vue'
 import { message as Message } from 'ant-design-vue'
 import type { Rule } from 'ant-design-vue/es/form'
-
-const emits = defineEmits(['update:modelValue'])
+import { CardApi } from '@/webapi'
+const emits = defineEmits(['update:modelValue', 'refesh'])
 
 const props = defineProps({
   modelValue: {
@@ -75,12 +72,22 @@ const formRef: any = ref('')
 
 const formData = reactive({
   cardType: '', // 卡号类型
-  days: 1, // 有效天数
-  num: 1 // 数量
+  days: null, // 有效天数
+  num: null // 数量
 })
 
 const state = reactive({
-  loading: false
+  loading: false,
+  typeOptions: [
+    {
+      value: 1,
+      label: '正式卡'
+    },
+    {
+      value: 2,
+      label: '测试卡'
+    }
+  ]
 })
 
 // 表单校验
@@ -90,7 +97,22 @@ const formRules: Record<string, Rule[]> = {
   num: [{ required: true, message: '请输入' }]
 }
 const onSubmit = async () => {
-  console.log(formData)
+  let params = {
+    ...formData
+  }
+  state.loading = true
+  let { code, data = {}, message }: any = await CardApi.addCard(params)
+  state.loading = false
+  if (code === 200) {
+    Message.success('添加成功')
+    emits('refesh')
+    emits('update:modelValue', false)
+  } else {
+    Message.error(message || '请求失败')
+  }
+}
+const setValue = (type, num) => {
+  formData[type] = num
 }
 
 const onSave = () => {

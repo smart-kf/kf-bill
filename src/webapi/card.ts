@@ -1,6 +1,14 @@
 import baseService from '@/utils/http/axios'
 
-// 用户登录
-export const userLogin = (data: any) => {
-  return baseService.post(`api/bill/login`, data)
+// 获取卡密list
+export const getCardList = (data: any) => {
+  return baseService.post(`api/bill/card/list`, data)
+}
+// 更新状态
+export const updateStatus = (data: any) => {
+  return baseService.post(`api/bill/card/updateStatus`, data)
+}
+// 新增
+export const addCard = (data: any) => {
+  return baseService.post(`api/bill/card/batch-add`, data)
 }

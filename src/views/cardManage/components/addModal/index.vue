@@ -8,7 +8,7 @@
         <a-form-item name="days" label="有效天数">
           <div>
             <a-space>
-              <a-input-number v-model:value="formData.days" :min="1" :max="100" style="width: 100%" />
+              <a-input-number v-model:value="formData.days" :min="1" :max="365" style="width: 100%" />
               <a-button @click="setValue('days', 7)">7天</a-button>
               <a-button @click="setValue('days', 30)">30天</a-button>
             </a-space>
@@ -16,7 +16,7 @@
         </a-form-item>
         <a-form-item name="num" label="生成数量">
           <a-space>
-            <a-input-number v-model:value="formData.num" :min="1" :max="200" style="width: 100%" />
+            <a-input-number v-model:value="formData.num" :min="1" :max="2000" style="width: 100%" />
             <a-button @click="setValue('num', 50)">50</a-button>
             <a-button @click="setValue('num', 100)">100</a-button>
           </a-space>
@@ -71,9 +71,9 @@ watch(
 const formRef: any = ref('')
 
 const formData = reactive({
-  cardType: '', // 卡号类型
-  days: null, // 有效天数
-  num: null // 数量
+  cardType: 1, // 卡号类型
+  days: 1, // 有效天数
+  num: 1 // 数量
 })
 
 const state = reactive({

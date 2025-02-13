@@ -54,16 +54,7 @@
         </template>
       </template>
     </a-table>
-    <a-pagination
-      size="small"
-      v-model:current="searchParams.page"
-      :defaultPageSize="20"
-      :total="state.total"
-      @change="onPageChange"
-      show-size-changer
-      show-quick-jumper
-      :show-total="(total) => `共 ${total} 条`"
-    />
+    <a-pagination size="small" v-model:current="searchParams.page" :total="state.total" @change="onPageChange" show-size-changer show-quick-jumper :show-total="(total) => `共 ${total} 条`" />
   </div>
   <AddModal v-model:model-value="state.showDia" :action-type="state.actionType" @refesh="onSearch"></AddModal>
 </template>
@@ -89,7 +80,7 @@ const state = reactive({
 
 const searchParams = reactive({
   page: 1,
-  pageSize: 20
+  pageSize: 10
 })
 
 const columns = [
@@ -139,7 +130,7 @@ const columns = [
 
 const onReset = () => {
   searchParams.page = 1
-  searchParams.pageSize = 20
+  searchParams.pageSize = 10
   getTableList()
 }
 

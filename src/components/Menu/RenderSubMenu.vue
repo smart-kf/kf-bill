@@ -49,7 +49,7 @@ const filterParams = (menu) => {
   align-items: center;
   justify-content: center;
   span:last-child {
-    font-size: 12px;
+    font-size: 16px;
     font-weight: normal;
     padding-top: 2px;
     opacity: 1;

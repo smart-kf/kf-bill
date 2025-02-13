@@ -26,7 +26,6 @@
           <a-space>
             <a-button @click="onReset">重置</a-button>
             <a-button type="primary" @click="onSearch">查询</a-button>
-            <a-button type="primary" @click="onAddMsg">批量新增卡号</a-button>
           </a-space>
         </a-form-item>
       </a-form>
@@ -40,16 +39,7 @@
         </template>
       </template>
     </a-table>
-    <a-pagination
-      size="small"
-      v-model:current="searchParams.page"
-      :defaultPageSize="20"
-      :total="state.total"
-      @change="onPageChange"
-      show-size-changer
-      show-quick-jumper
-      :show-total="(total) => `共 ${total} 条`"
-    />
+    <a-pagination size="small" v-model:current="searchParams.page" :total="state.total" @change="onPageChange" show-size-changer show-quick-jumper :show-total="(total) => `共 ${total} 条`" />
   </div>
 </template>
 
@@ -73,7 +63,7 @@ const state = reactive({
 
 const searchParams = reactive({
   page: 1,
-  pageSize: 20,
+  pageSize: 10,
   fromAddress: '',
   orderNo: '',
   status: null,
@@ -164,7 +154,7 @@ const columns = [
 
 const onReset = () => {
   searchParams.page = 1
-  searchParams.pageSize = 20
+  searchParams.pageSize = 10
   searchParams.fromAddress = ''
   searchParams.orderNo = ''
   searchParams.status = null

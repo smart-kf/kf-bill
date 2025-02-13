@@ -10,7 +10,7 @@
           <a-select v-model:value="searchParams.cardType" placeholder="请选择卡片类型" :options="state.typeOptions" allowClear> </a-select>
         </a-form-item>
         <a-form-item label="登录状态">
-          <a-select v-model:value="searchParams.cardType" placeholder="请选择登录状态" :options="state.loginOptions" allowClear> </a-select>
+          <a-select v-model:value="searchParams.loginStatus" placeholder="请选择登录状态" :options="state.loginOptions" allowClear> </a-select>
         </a-form-item>
         <a-form-item label="销售状态">
           <a-select v-model:value="searchParams.saleStatus" placeholder="请选择销售状态" :options="state.saleOptions" allowClear> </a-select>
@@ -35,7 +35,15 @@
         <template v-if="column.dataIndex === 'saleStatusText'">
           <a-tag v-if="record.saleStatus === 1" color="blue">{{ record.saleStatusText }}</a-tag>
           <a-tag v-if="record.saleStatus === 2" color="gray">{{ record.saleStatusText }}</a-tag>
-          <a-tag v-if="record.saleStatus === 3" color="green">{{ record.saleStatusText }}</a-tag>
+          <a-tag v-if="record.saleStatus === 3" color="#87d068">{{ record.saleStatusText }}</a-tag>
+        </template>
+        <template v-if="column.dataIndex === 'cardTypeText'">
+          <a-tag v-if="record.cardType === 1" color="blue">{{ record.cardTypeText }}</a-tag>
+          <a-tag v-if="record.cardType === 2" color="gray">{{ record.cardTypeText }}</a-tag>
+        </template>
+        <template v-if="column.dataIndex === 'loginStatusText'">
+          <span v-if="record.loginStatus === 1" style="color: gray">{{ record.loginStatusText }}</span>
+          <span v-if="record.loginStatus === 2" style="color: #87d068">{{ record.loginStatusText }}</span>
         </template>
         <template v-if="column.dataIndex === 'operation'">
           <a-space>
@@ -44,16 +52,7 @@
         </template>
       </template>
     </a-table>
-    <a-pagination
-      size="small"
-      v-model:current="searchParams.page"
-      :defaultPageSize="20"
-      :total="state.total"
-      @change="onPageChange"
-      show-size-changer
-      show-quick-jumper
-      :show-total="(total) => `共 ${total} 条`"
-    />
+    <a-pagination size="small" v-model:current="searchParams.page" :total="state.total" @change="onPageChange" show-size-changer show-quick-jumper :show-total="(total) => `共 ${total} 条`" />
     <a-modal v-model:visible="state.showStatusDia" title="更新销售状态" @ok="onStatusChangeOk">
       <div>
         <a-form>
@@ -122,11 +121,11 @@ const state = reactive({
 
 const searchParams = reactive({
   page: 1,
-  pageSize: 20,
+  pageSize: 10,
   expireTime: [],
   loginTime: [],
   cardID: '',
-  cardType: null,
+  cardType: 1,
   loginStatus: null,
   saleStatus: null
 })
@@ -205,10 +204,10 @@ const onReset = () => {
   searchParams.expireTime = []
   searchParams.loginTime = []
   searchParams.cardID = ''
-  searchParams.cardType = null
+  searchParams.cardType = 1
   searchParams.loginStatus = null
   searchParams.saleStatus = null
-  searchParams.pageSize = 20
+  searchParams.pageSize = 10
   getTableList()
 }
 

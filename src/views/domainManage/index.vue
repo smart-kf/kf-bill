@@ -2,7 +2,7 @@
 <template>
   <div class="kf-body">
     <div class="top-action">
-      <a-button type="primary" @click="onAddMsg">新增域名</a-button>
+      <a-button type="primary" @click="onAddMsg">批量新增域名</a-button>
       <div @click="onSearch">
         <span class="refesh">
           <ReloadOutlined />

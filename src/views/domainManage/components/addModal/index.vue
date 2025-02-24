@@ -3,7 +3,7 @@
     <div>
       <a-form id="formLogin" ref="formRef" :model="formData" :rules="formRules" :label-col="{ span: 4 }">
         <a-form-item name="topName" label="域名">
-          <a-input v-model:value="formData.topName" placeholder="https://开头" style="width: 80%" />
+          <a-textarea v-model:value="formData.topName" placeholder="https://开头，一行一个" :rows="4" style="width: 80%" />
         </a-form-item>
         <a-form-item name="isPublic" label="是否公开">
           <a-switch v-model:checked="formData.isPublic" />
@@ -32,7 +32,7 @@ const props = defineProps({
   },
   title: {
     type: String,
-    default: '批量新增卡号'
+    default: '批量新增域名'
   },
   actionType: {
     type: String,

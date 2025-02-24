@@ -32,6 +32,12 @@ export default [
         name: 'domainManage',
         meta: { title: '域名管理', icon: 'icon-huanyingyu', keepAlive: false },
         component: () => import('@/views/domainManage/index.vue')
+      },
+      {
+        path: '/systemSetting',
+        name: 'systemSetting',
+        meta: { title: '系统设置', icon: 'icon-shezhi', keepAlive: false },
+        component: () => import('@/views/systemSetting/index.vue')
       }
     ]
   },

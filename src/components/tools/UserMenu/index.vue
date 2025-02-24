@@ -4,8 +4,9 @@
       <template #content>
         <a-button type="link" @click="loginOut">退出登录</a-button>
       </template>
-      <a-avatar :size="60" wrap :src="userInfo.avatar"> </a-avatar>
+      <a-avatar :size="60" :src="userInfo.avatar"> </a-avatar>
     </a-popover>
+    <div class="point"></div>
   </div>
 </template>
 
@@ -44,5 +45,22 @@ const loginOut = () => {
 }
 .ant-avatar {
   cursor: pointer;
+}
+.point {
+  height: 80px;
+  position: relative;
+  display: inline-block; /* 或其他适合你的布局的display属性 */
+}
+
+.point::after {
+  content: '';
+  position: absolute;
+  bottom: 7px;
+  right: -2px;
+  width: 8px;
+  height: 8px;
+  background-color: #52c41a;
+  border-radius: 50%;
+  border: 1px solid #fff;
 }
 </style>

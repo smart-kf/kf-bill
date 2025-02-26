@@ -187,7 +187,7 @@ const getTableList = async () => {
   if (code === 200) {
     state.dataSource = (data.list || []).map((el) => {
       el.CreatedAtText = dayjs(el.CreatedAt).format('YYYY-MM-DD HH:mm:ss')
-      el.priceText = '$' + el.price || 0
+      el.priceText = '$' + (el.price || 0) / 1000000
       return el
     })
     state.total = data.total || 0

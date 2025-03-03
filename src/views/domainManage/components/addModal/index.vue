@@ -1,27 +1,16 @@
 <template>
   <a-modal v-model:visible="openModal" :title="title" @ok="onSave" :confirmLoading="state.loading" :maskClosable="false" :centered="true" width="600px" :bodyStyle="{ minHeight: '250px' }">
     <div>
-      <a-form id="formLogin" ref="formRef" :model="formData" :rules="formRules">
-        <a-form-item name="cardType" label="卡号类型">
-          <a-select v-model:value="formData.cardType" placeholder="please select your zone" style="width: 80%">
-            <a-select-option value="shanghai">类型1</a-select-option>
-            <a-select-option value="beijing">类型2</a-select-option>
-          </a-select>
+      <a-form id="formLogin" ref="formRef" :model="formData" :rules="formRules" :label-col="{ span: 4 }">
+        <a-form-item name="topName" label="域名">
+          <a-textarea v-model:value="formData.topName" placeholder="https://开头，一行一个" :rows="4" style="width: 80%" />
         </a-form-item>
-        <a-form-item name="days" label="有效天数">
-          <div>
-            <a-space>
-              <a-input-number v-model:value="formData.days" :min="1" :max="100" style="width: 100%" />
-              <a-button>7天</a-button>
-              <a-button>30天</a-button>
-            </a-space>
-          </div>
+        <a-form-item name="isPublic" label="是否公开">
+          <a-switch v-model:checked="formData.isPublic" />
         </a-form-item>
-        <a-form-item name="num" label="生成数量">
-          <a-space>
-            <a-input-number v-model:value="formData.num" :min="1" :max="200" style="width: 100%" />
-            <a-button>50</a-button>
-            <a-button>100</a-button>
+        <a-form-item name="status" label="域名状态">
+          <a-space direction="vertical">
+            <a-radio-group v-model:value="formData.status" :options="state.options" />
           </a-space>
         </a-form-item>
       </a-form>
@@ -33,8 +22,8 @@
 import { ref, defineProps, onMounted, computed, reactive, watch } from 'vue'
 import { message as Message } from 'ant-design-vue'
 import type { Rule } from 'ant-design-vue/es/form'
-
-const emits = defineEmits(['update:modelValue'])
+import { DomainApi } from '@/webapi'
+const emits = defineEmits(['update:modelValue', 'refesh'])
 
 const props = defineProps({
   modelValue: {
@@ -43,7 +32,7 @@ const props = defineProps({
   },
   title: {
     type: String,
-    default: '批量新增卡号'
+    default: '批量新增域名'
   },
   actionType: {
     type: String,
@@ -74,23 +63,39 @@ watch(
 const formRef: any = ref('')
 
 const formData = reactive({
-  cardType: '', // 卡号类型
-  days: 1, // 有效天数
-  num: 1 // 数量
+  topName: '', // 卡号类型
+  status: 1,
+  isPublic: true // 数量
 })
 
 const state = reactive({
-  loading: false
+  loading: false,
+  options: [
+    { label: '正常', value: 1 },
+    { label: '禁用', value: 2 }
+  ]
 })
 
 // 表单校验
 const formRules: Record<string, Rule[]> = {
-  cardType: [{ required: true, message: '请选择' }],
-  days: [{ required: true, message: '请输入' }],
-  num: [{ required: true, message: '请输入' }]
+  topName: [{ required: true, message: '请输入' }],
+  status: [{ required: true, message: '请输入' }],
+  isPublic: [{ required: true, message: '请输入' }]
 }
 const onSubmit = async () => {
-  console.log(formData)
+  let params = {
+    ...formData
+  }
+  state.loading = true
+  let { code, data = {}, message }: any = await DomainApi.addDomain(params)
+  state.loading = false
+  if (code === 200) {
+    Message.success('添加成功')
+    emits('refesh')
+    emits('update:modelValue', false)
+  } else {
+    Message.error(message || '请求失败')
+  }
 }
 
 const onSave = () => {

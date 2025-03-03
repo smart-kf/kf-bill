@@ -9,9 +9,12 @@
 import zh_CN from 'ant-design-vue/es/locale/zh_CN'
 import en_US from 'ant-design-vue/es/locale/en_US'
 import { useI18n } from 'vue-i18n'
+import dayjs from 'dayjs'
+import 'dayjs/locale/zh-cn'
 
 const { locale } = useI18n()
 const lang = { 'en-US': en_US, 'zh-CN': zh_CN }
+dayjs.locale(lang[locale.value])
 </script>
 
 <style>

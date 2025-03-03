@@ -6,8 +6,8 @@
     <div class="user-layout-login">
       <div class="title">云客服后台管理系统登录</div>
       <a-form id="formLogin" ref="loginFormRef" :model="formData" :rules="loginRules">
-        <a-form-item name="userNum">
-          <a-input type="text" placeholder="请输入账号" allowClear :maxlength="150" v-model:value="formData.userNum" />
+        <a-form-item name="username">
+          <a-input type="text" placeholder="请输入账号" allowClear :maxlength="150" v-model:value="formData.username" />
         </a-form-item>
         <a-form-item name="password">
           <a-input-password placeholder="请输入密码" allowClear :maxlength="150" v-model:value="formData.password" />
@@ -37,19 +37,19 @@ const loginFormRef: any = ref(null)
 
 // 表单信息
 const formData: any = reactive({
-  userNum: '',
+  username: '',
   password: ''
 })
 
 // 表单校验
 const loginRules: Record<string, Rule[]> = {
-  userNum: [{ required: true, message: '请输入账号' }],
+  username: [{ required: true, message: '请输入账号' }],
   password: [{ required: true, message: '请输入密码' }]
 }
 
 const loginHandle = async () => {
   let params = {
-    userNum: formData.userNum,
+    username: formData.username,
     password: formData.password
   }
   state.loading = true
@@ -57,24 +57,20 @@ const loginHandle = async () => {
   state.loading = false
   if (code === 200) {
     ls.set('token', data.token)
-    ls.set('cdnDomain', data.cdnDomain)
     router.push({ path: '/' })
   } else {
     Message.error(message || '请求失败')
   }
 }
 const loginSubmit = () => {
-  ls.set('token', 'data.token')
-  ls.set('cdnDomain', 'data.cdnDomain')
-  router.push({ path: '/' })
-  // loginFormRef.value
-  //   .validate()
-  //   .then(() => {
-  //     loginHandle()
-  //   })
-  //   .catch((err) => {
-  //     console.log(err)
-  //   })
+  loginFormRef.value
+    .validate()
+    .then(() => {
+      loginHandle()
+    })
+    .catch((err) => {
+      console.log(err)
+    })
 }
 
 onMounted(() => {})

@@ -1,5 +1,5 @@
 <template>
-  <a-layout-sider :class="['sider', 'shadow', theme]" width="72px" :collapsible="collapsible" v-model:collapsed="sideMenuCollapsed" :trigger="null">
+  <a-layout-sider :class="['sider', 'shadow', theme]" width="120px" :collapsible="collapsible" v-model:collapsed="sideMenuCollapsed" :trigger="null">
     <UserMenu></UserMenu>
     <Menu :collapsed="collapsed" :menu="menus" :theme="theme" :mode="mode" @select="onSelect"></Menu>
   </a-layout-sider>

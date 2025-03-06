@@ -8,6 +8,9 @@ export const getCardList = (data: any) => {
 export const updateStatus = (data: any) => {
   return baseService.post(`api/bill/card/updateStatus`, data)
 }
+export const updateCardExpire = (data: any) => {
+  return baseService.post(`api/bill/card/updateCardExpire`, data)
+}
 // 新增
 export const addCard = (data: any) => {
   return baseService.post(`api/bill/card/batch-add`, data)

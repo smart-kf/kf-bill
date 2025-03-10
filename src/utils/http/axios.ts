@@ -16,9 +16,9 @@ const baseService = axios.create({
   timeout: 60000,
   responseType: 'json',
   withCredentials: false,
-  headers: {
-    'X-Requested-With': 'XMLHttpRequest'
-  }
+  // headers: {
+  //   'X-Requested-With': 'XMLHttpRequest'
+  // }
 })
 // request interceptor
 baseService.interceptors.request.use(

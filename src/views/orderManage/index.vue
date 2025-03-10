@@ -16,10 +16,8 @@
           <a-input v-model:value="searchParams.tradeId" placeholder="请输入区块链交易ID" allowClear />
         </a-form-item>
         <a-form-item label="订单状态">
-          <a-select v-model:value="searchParams.status" placeholder="请选择订单状态" allowClear>
-            <a-select-option value="1">创建</a-select-option>
-            <a-select-option value="2">支付成功</a-select-option>
-            <a-select-option value="3">失败</a-select-option>
+          <a-select v-model:value.number="searchParams.status" placeholder="请选择订单状态" allowClear>
+            <a-select-option v-for="item in statusList" :value="item.value">{{  item.label  }}</a-select-option>
           </a-select>
         </a-form-item>
         <a-form-item>
@@ -66,10 +64,21 @@ const searchParams = reactive({
   pageSize: 10,
   fromAddress: '',
   orderNo: '',
-  status: null,
+  status: 2,
   toAddress: '',
   tradeId: ''
 })
+
+const statusList = [{
+  label: '创建',
+  value: 1
+}, {
+  label: '支付成功',
+  value: 2
+}, {
+  label: '失败',
+  value: 3
+}]
 
 const columns = [
   {

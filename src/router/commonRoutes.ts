@@ -38,6 +38,12 @@ export default [
         name: 'systemSetting',
         meta: { title: '系统设置', icon: 'icon-shezhi', keepAlive: false },
         component: () => import('@/views/systemSetting/index.vue')
+      },
+      {
+        path: '/system/address',
+        name: 'address',
+        meta: { title: '地址管理', icon: 'icon-shezhi', keepAlive: false },
+        component: () => import('@/views/systemSetting/address.vue')
       }
     ]
   },

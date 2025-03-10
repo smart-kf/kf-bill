@@ -3,6 +3,8 @@ import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
 
+export const baseURL = import.meta.env.VITE_API_URL
+
 dayjs.extend(utc)
 dayjs.extend(timezone)
 
@@ -107,10 +109,6 @@ export const getWeek = (week: number, useZhou) => {
   }
   return useZhou ? '周' : '星期' + txt
 }
-
-export const isDev = (import.meta as any).env.VITE_DEV
-
-export const baseURL = isDev == 'true' ? 'https://api.smartkf.top/' : ''
 
 export function toLocalTimeStr({ date, format = 'YYYY-MM-DD HH:mm:ss' }) {
   if (!date) return null

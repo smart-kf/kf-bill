@@ -3,54 +3,91 @@
   <div class="kf-body">
     <a-spin :spinning="state.loading">
       <div class="max-containter" style="margin: auto">
-        <div class="base-info">
-          <div class="title mt0">套餐设置</div>
-          <a-form name="basic" ref="formRef1" :model="formData" autocomplete="off" :label-col="{ span: 4 }" :rules="rules" labelAlign="right">
-            <a-form-item label="日卡" name="dailyPackagePrice" require>
-              <a-input-number v-model:value="formData.dailyPackagePrice" placeholder="请输入" :min="1" :max="999" addon-after="$" style="width: 50%"></a-input-number>
-            </a-form-item>
-            <a-form-item label="周卡" name="weeklyPackagePrice" require>
-              <a-input-number v-model:value="formData.weeklyPackagePrice" placeholder="请输入" :min="1" :max="999" addon-after="$" style="width: 50%"></a-input-number>
-            </a-form-item>
-            <a-form-item label="月卡" name="monthlyPackagePrice" require>
-              <a-input-number v-model:value="formData.monthlyPackagePrice" placeholder="请输入" :min="1" :max="999" addon-after="$" style="width: 50%"></a-input-number>
-            </a-form-item>
-          </a-form>
-          <div class="title">支付配置</div>
-          <a-form name="basic" ref="formRef2" :model="formData" autocomplete="off" :label-col="{ span: 4 }" :rules="rules" labelAlign="right">
-            <a-form-item label="appId" name="appId"> {{ formData.appId }}</a-form-item>
-            <a-form-item label="邮箱" name="email" require>
-              <a-input v-model:value="formData.email" placeholder="请输入邮箱" style="width: 80%" />
-            </a-form-item>
-            <a-form-item label="支付地址" name="payUrl" require>
-              <a-input v-model:value="formData.payUrl" placeholder="支付地址域名(带https)" style="width: 80%" />
-            </a-form-item>
-            <a-form-item label="订单过期时间" name="expire" require>
-              <a-input-number v-model:value="formData.expire" placeholder="请输入" :min="0" :max="999" addon-after="分钟" style="width: 50%"></a-input-number>
-            </a-form-item>
-            <a-form-item label="token" name="token" require>
-              <a-textarea v-model:value="formData.token" placeholder="token" allowClear :maxlength="255" show-count :rows="2" style="width: 80%" />
-            </a-form-item>
-          </a-form>
-          <div class="title">公告设置</div>
-          <a-form name="basic" ref="formRef3" :model="formData" autocomplete="off" :label-col="{ span: 4 }" :rules="rules" labelAlign="right">
-            <a-form-item name="enable" label="系统公告">
-              <a-textarea v-model:value="formData.content" placeholder="请输入公告" allowClear :maxlength="255" show-count :rows="2" style="width: 80%" />
-            </a-form-item>
-            <a-form-item name="enable" label="是否在客服后台登录时展示" :label-col="{ span: 7 }">
-              <a-switch v-model:checked="formData.enable" />
-            </a-form-item>
-          </a-form>
-          <div class="title">其他设置</div>
-          <a-form name="basic" ref="formRef4" :model="formData" autocomplete="off" :label-col="{ span: 4 }" :rules="rules" labelAlign="right">
-            <a-form-item label="测试卡过期时间" name="testingCardMinute" require :label-col="{ span: 5 }">
-              <a-input-number v-model:value="formData.testingCardMinute" placeholder="请输入" :min="0" :max="999" addon-after="分钟" style="width: 50%"></a-input-number>
-            </a-form-item>
-          </a-form>
-          <div class="bottom-btn">
-            <a-button type="primary" @click="onSave">保存</a-button>
-          </div>
-        </div>
+        <a-tabs v-model:activeKey="activeKey">
+          <a-tab-pane key="1" tab="基础设置">
+            <div class="base-info">
+              <div class="title mt0">套餐设置</div>
+              <a-form name="basic" ref="formRef1" :model="formData" autocomplete="off" :label-col="{ span: 4 }" :rules="rules" labelAlign="right">
+                <a-form-item label="日卡" name="dailyPackagePrice" require>
+                  <a-input-number v-model:value="formData.dailyPackagePrice" placeholder="请输入" :min="1" :max="999" addon-after="$" style="width: 50%"></a-input-number>
+                </a-form-item>
+                <a-form-item label="周卡" name="weeklyPackagePrice" require>
+                  <a-input-number v-model:value="formData.weeklyPackagePrice" placeholder="请输入" :min="1" :max="999" addon-after="$" style="width: 50%"></a-input-number>
+                </a-form-item>
+                <a-form-item label="月卡" name="monthlyPackagePrice" require>
+                  <a-input-number v-model:value="formData.monthlyPackagePrice" placeholder="请输入" :min="1" :max="999" addon-after="$" style="width: 50%"></a-input-number>
+                </a-form-item>
+              </a-form>
+              <div class="title">支付配置</div>
+              <a-form name="basic" ref="formRef2" :model="formData" autocomplete="off" :label-col="{ span: 4 }" :rules="rules" labelAlign="right">
+                <a-form-item label="appId" name="appId"> {{ formData.appId }}</a-form-item>
+                <a-form-item label="邮箱" name="email" require>
+                  <a-input v-model:value="formData.email" placeholder="请输入邮箱" style="width: 80%" />
+                </a-form-item>
+                <a-form-item label="支付地址" name="payUrl" require>
+                  <a-input v-model:value="formData.payUrl" placeholder="支付地址域名(带https)" style="width: 80%" />
+                </a-form-item>
+                <a-form-item label="订单过期时间" name="expire" require>
+                  <a-input-number v-model:value="formData.expire" placeholder="请输入" :min="0" :max="999" addon-after="分钟" style="width: 50%"></a-input-number>
+                </a-form-item>
+                <a-form-item label="token" name="token" require>
+                  <a-textarea v-model:value="formData.token" placeholder="token" allowClear :maxlength="255" show-count :rows="2" style="width: 80%" />
+                </a-form-item>
+              </a-form>
+              <div class="title">公告设置</div>
+              <a-form name="basic" ref="formRef3" :model="formData" autocomplete="off" :label-col="{ span: 4 }" :rules="rules" labelAlign="right">
+                <a-form-item name="enable" label="系统公告">
+                  <a-textarea v-model:value="formData.content" placeholder="请输入公告" allowClear :maxlength="255" show-count :rows="2" style="width: 80%" />
+                </a-form-item>
+                <a-form-item name="enable" label="是否在客服后台登录时展示" :label-col="{ span: 7 }">
+                  <a-switch v-model:checked="formData.enable" />
+                </a-form-item>
+              </a-form>
+              <div class="title">其他设置</div>
+              <a-form name="basic" ref="formRef4" :model="formData" autocomplete="off" :label-col="{ span: 4 }" :rules="rules" labelAlign="right">
+                <a-form-item label="测试卡过期时间" name="testingCardMinute" require :label-col="{ span: 5 }">
+                  <a-input-number v-model:value="formData.testingCardMinute" placeholder="请输入" :min="0" :max="999" addon-after="分钟" style="width: 50%"></a-input-number>
+                </a-form-item>
+              </a-form>
+              <div class="bottom-btn">
+                <a-button type="primary" @click="onSave">保存</a-button>
+              </div>
+            </div>
+
+          </a-tab-pane>
+          <a-tab-pane key="3" tab="支付网络设置">
+            <div class="base-info"> 
+              <div class="title">支付网络设置</div>
+                <a-form name="basic" ref="formRef5" :model="formData" autocomplete="off" :label-col="{ span: 4 }" :rules="rules" labelAlign="right">
+                  <a-form-item name="apiKey" label="ApiKey">
+                    <a-textarea v-model:value="formData.apiKey" placeholder="请输入trongid的APIKEY,多个以英文,分割" allowClear show-count :rows="4" style="width: 80%" />
+                  </a-form-item>
+                  <a-form-item name="proxy" label="代理">
+                    <a-input v-model:value="formData.proxy" placeholder="请输入查询代理，国内必须填写，国外可不填写，仅只支持http协议代理" style="width: 80%" />
+                  </a-form-item>
+                  <a-form-item name="timeout" label="查询超时时间(秒): ">
+                    <a-input-number v-model:value="formData.timeout" placeholder="最少为5s" max="60" min="5" style="width: 80%" />
+                  </a-form-item>
+                  <a-form-item name="cron_second" label="轮训查询间隔">
+                    <a-input-number v-model:value="formData.cron_second" placeholder="最少为5s" max="60" min="5" style="width: 80%" />
+                  </a-form-item>
+                  <a-form-item name="tron_network" label="网络选择">
+                    <a-select v-model:value="formData.tron_network" placeholder="请选择网络" style="width: 80%" @change="onNetworkChange">
+                      <a-option value="nile">Nile测试网络</a-option>
+                      <a-option value="main">主网</a-option>
+                    </a-select>
+                  </a-form-item>
+                  <a-form-item name="timeout" label="合约地址">
+                    <a-input disabled v-model:value="formData.usdtContractAddress" max="60" min="5" style="width: 80%" />
+                  </a-form-item>
+                  <div class="bottom-btn">
+                    <a-button type="primary" @click="saveNetwork">保存</a-button>
+                  </div>
+                </a-form>
+            </div>
+            
+            </a-tab-pane>
+        </a-tabs> 
       </div>
     </a-spin>
   </div>
@@ -69,6 +106,7 @@ const formRef1: any = ref('')
 const formRef2: any = ref('')
 const formRef3: any = ref('')
 const formRef4: any = ref('')
+const formRef5: any = ref('')
 
 const formData: any = reactive({
   content: '', // 公告
@@ -81,7 +119,14 @@ const formData: any = reactive({
   dailyPackagePrice: null,
   monthlyPackagePrice: null,
   weeklyPackagePrice: null,
-  testingCardMinute: null // 测试卡过期时间
+  testingCardMinute: null, // 测试卡过期时间
+
+  apiKey: '',
+  proxy: '',
+  timeout: 5,
+  cron_second: 5,
+  tron_network: 'nile',
+  usdtContractAddress: 'TXYZopYRdj2D9XRtbG411XZZ3kM5VkAeBf',
 })
 const state = reactive({
   loading: false,
@@ -174,6 +219,46 @@ const initData = async () => {
   } else {
     Message.error(message)
   }
+  state.loading = true
+  let res = await SystemApi.getTron()
+  state.loading = false
+  formData.apiKey = res.data.apiKey
+  formData.proxy = res.data.proxy
+  formData.timeout = res.data.timeout
+  formData.cron_second = res.data.cron_second
+  formData.tron_network = res.data.tron_network
+  if(res.data.tron_network === 'nile') {
+    formData.usdtContractAddress = 'TXYZopYRdj2D9XRtbG411XZZ3kM5VkAeBf'
+  } else {
+    formData.usdtContractAddress = 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t'
+  }
+}
+
+const onNetworkChange = (e) => {
+  if(e === 'nile') {
+    formData.usdtContractAddress = 'TXYZopYRdj2D9XRtbG411XZZ3kM5VkAeBf'
+  } else {
+    formData.usdtContractAddress = 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t'
+  }
+}
+
+const saveNetwork = (e) => {
+  state.loading = true
+  let params = {
+    apiKey: formData.apiKey,
+    proxy: formData.proxy,
+    timeout: formData.timeout,
+    tron_network: formData.tron_network,
+    cron_second: formData.cron_second,
+  }
+  SystemApi.updateTron(params).then(res => {
+    state.loading = false
+    if(res.code === 0) {
+      Message.success('保存成功')
+    } else {
+      Message.error(res.message)
+    }
+  })
 }
 
 onMounted(() => {

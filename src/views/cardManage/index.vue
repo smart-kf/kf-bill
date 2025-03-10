@@ -45,6 +45,12 @@
           <span v-if="record.loginStatus === 1" style="color: gray">{{ record.loginStatusText }}</span>
           <span v-if="record.loginStatus === 2" style="color: #87d068">{{ record.loginStatusText }}</span>
         </template>
+        <template v-if="column.dataIndex === 'expireTimeText'">
+          <a-space>
+            <span :class="timeOutCheck(record)">{{ record.expireTimeText }}</span>
+            <span v-if="record.expireTime > 0" class="table-link-action" @click="onEditTime(record)"> 更新 </span>
+          </a-space>
+        </template>
         <template v-if="column.dataIndex === 'operation'">
           <a-space>
             <span class="table-link-action" @click="onEdit(record)"> 更新销售状态 </span>
@@ -62,6 +68,23 @@
         </a-form>
       </div>
     </a-modal>
+    <a-modal v-model:visible="state.showTimeDia" title="更新过期时间" @ok="onTimeChangeOk">
+      <div>
+        <a-form>
+          <a-form-item label="过期时间">
+            <a-date-picker show-time placeholder="请选择" style="width: 80%" v-model:value="state.updateTime" format="YYYY-MM-DD HH:mm:ss">
+              <template #renderExtraFooter>
+                <a-space>
+                  <a-button type="primary" size="small" @click="setTime(1)">1天</a-button>
+                  <a-button type="primary" size="small" @click="setTime(7)">7天</a-button>
+                  <a-button type="primary" size="small" @click="setTime(30)">30天</a-button>
+                </a-space>
+              </template>
+            </a-date-picker>
+          </a-form-item>
+        </a-form>
+      </div>
+    </a-modal>
     <AddModal v-model:model-value="state.showDia" :action-type="state.actionType" @refesh="onSearch"></AddModal>
   </div>
 </template>
@@ -72,8 +95,8 @@ import { h } from 'vue'
 import { message as Message } from 'ant-design-vue'
 import { CardApi } from '@/webapi'
 import AddModal from './components/addModal/index.vue'
-import dayjs from 'dayjs'
-
+import dayjs, { Dayjs } from 'dayjs'
+type RangeValue = [Dayjs, Dayjs]
 const state = reactive({
   dataSource: [],
   editableData: {},
@@ -82,7 +105,10 @@ const state = reactive({
   showDia: false,
   loading: false,
   showStatusDia: false,
+  showTimeDia: false,
+  updateTime: null as any,
   total: 0,
+  nowTime: 0, // 当前时间，用于计算是否过期
   typeOptions: [
     {
       value: 1,
@@ -159,7 +185,7 @@ const columns = [
     align: 'center',
     dataIndex: 'lastLoginTimeText',
     key: 'lastLoginTimeText',
-    width: 120
+    width: 180
   },
   {
     title: '登录状态',
@@ -173,16 +199,8 @@ const columns = [
     align: 'center',
     dataIndex: 'expireTimeText',
     key: 'expireTimeText',
-    width: 120
+    width: 200
   },
-
-  // {
-  //   title: '密码',
-  //   align: 'center',
-  //   dataIndex: 'password',
-  //   key: 'password',
-  //   width: 120
-  // },
   {
     title: '销售状态',
     align: 'center',
@@ -195,9 +213,15 @@ const columns = [
     align: 'center',
     fixed: 'right',
     dataIndex: 'operation',
-    width: 100
+    width: 200
   }
 ]
+
+const timeOutCheck = (record: any) => {
+  const { expireTime } = record
+  if (expireTime === 0) return ''
+  return state.nowTime > expireTime ? 'red-time' : 'green-time'
+}
 
 const onReset = () => {
   searchParams.page = 1
@@ -222,6 +246,18 @@ const onAddMsg = () => {
   state.showDia = true
 }
 
+const setTime = (num: number) => {
+  state.updateTime = dayjs().add(num, 'day')
+}
+
+// 更新过期时间
+const onEditTime = (item) => {
+  state.actionType = 'edit'
+  state.editData = { ...item }
+  console.log(dayjs(item.expireTimeText))
+  state.updateTime = dayjs(item.expireTimeText)
+  state.showTimeDia = true
+}
 const onEdit = (item) => {
   state.actionType = 'edit'
   state.editData = { ...item }
@@ -242,6 +278,29 @@ const onStatusChangeOk = async () => {
     getTableList()
   } else {
     state.showStatusDia = false
+    Message.error(message || '请求失败')
+  }
+}
+
+const onTimeChangeOk = async () => {
+  if (!state.updateTime) {
+    Message.error('请选择时间')
+    return
+  }
+  let expireTime = Math.floor(dayjs(state.updateTime).valueOf() / 1000)
+  let params = {
+    id: state.editData.id,
+    expireTime: expireTime
+  }
+  state.loading = true
+  let { code, data = {}, message }: any = await CardApi.updateCardExpire(params)
+  state.loading = false
+  if (code === 200) {
+    Message.success('更新成功')
+    state.showTimeDia = false
+    getTableList()
+  } else {
+    state.showTimeDia = false
     Message.error(message || '请求失败')
   }
 }
@@ -268,8 +327,9 @@ const getTableList = async () => {
   state.loading = false
   if (code === 200) {
     state.dataSource = (data.list || []).map((el) => {
-      el.expireTimeText = dayjs(el.expireTime * 1000).format('YYYY-MM-DD HH:mm:ss')
-      el.lastLoginTimeText = dayjs(el.lastLoginTime * 1000).format('YYYY-MM-DD HH:mm:ss')
+      el.expireTime = el.expireTime * 1000
+      el.expireTimeText = el.expireTime === 0 ? '--' : dayjs(el.expireTime).format('YYYY-MM-DD HH:mm:ss')
+      el.lastLoginTimeText = el.lastLoginTime === 0 ? '--' : dayjs(el.lastLoginTime * 1000).format('YYYY-MM-DD HH:mm:ss')
       let cardItem = state.typeOptions.find((v) => v.value === el.cardType)
       el.cardTypeText = (cardItem && cardItem.label) || '-'
       let loginItem = state.loginOptions.find((v) => v.value === el.loginStatus)
@@ -278,6 +338,7 @@ const getTableList = async () => {
       el.saleStatusText = (saleItem && saleItem.label) || '-'
       return el
     })
+    state.nowTime = dayjs().valueOf()
     state.total = data.total || 0
   } else {
     Message.error(message || '请求失败')
@@ -326,5 +387,11 @@ onMounted(() => {
 .search-btn {
   text-align: center;
   padding-bottom: 12px;
+}
+.green-time {
+  color: #87d068;
+}
+.red-time {
+  color: #ff4d4f;
 }
 </style>

@@ -34,6 +34,14 @@
                   <a-textarea v-model:value="formData.token" placeholder="token" allowClear :maxlength="255" show-count :rows="2" style="width: 80%" />
                 </a-form-item>
               </a-form>
+
+              <div class="title">域名价格设置</div>
+              <a-form name="basic" ref="formRef6" :model="formData" autocomplete="off" :label-col="{ span: 4 }" :rules="rules" labelAlign="right">
+                <a-form-item label="价格(U)" name="domainPrice" require>
+                  <a-input-number v-model:value="formData.domainPrice" placeholder="请输入" :min="0" :max="999" addon-after="U" style="width: 50%"></a-input-number>
+                </a-form-item>
+              </a-form>
+
               <div class="title">公告设置</div>
               <a-form name="basic" ref="formRef3" :model="formData" autocomplete="off" :label-col="{ span: 4 }" :rules="rules" labelAlign="right">
                 <a-form-item name="enable" label="系统公告">
@@ -107,6 +115,7 @@ const formRef2: any = ref('')
 const formRef3: any = ref('')
 const formRef4: any = ref('')
 const formRef5: any = ref('')
+const formRef6: any = ref('')
 
 const formData: any = reactive({
   content: '', // 公告
@@ -127,6 +136,8 @@ const formData: any = reactive({
   cron_second: 5,
   tron_network: 'nile',
   usdtContractAddress: 'TXYZopYRdj2D9XRtbG411XZZ3kM5VkAeBf',
+
+  domainPrice: 0, 
 })
 const state = reactive({
   loading: false,
@@ -140,7 +151,8 @@ const rules = {
   email: [{ required: true, message: '必填项不能为空', trigger: 'blur' }],
   payUrl: [{ required: true, message: '必填项不能为空', trigger: 'blur' }],
   token: [{ required: true, message: '必填项不能为空', trigger: 'blur' }],
-  expire: [{ required: true, message: '必填项不能为空', trigger: 'blur' }]
+  expire: [{ required: true, message: '必填项不能为空', trigger: 'blur' }],
+  domainPrice: [{ required: true, message: '域名价格不能为空', trigger: 'blur' }]
 }
 
 // 保存数据
@@ -173,7 +185,8 @@ const saveData = async () => {
     notice: {
       content: formData.content,
       enable: formData.enable
-    }
+    },
+    domainPrice: formData.domainPrice,
   }
   let { code, data, message }: any = await SystemApi.setSysConfig(params)
   state.loading = false
@@ -216,17 +229,18 @@ const initData = async () => {
     formData.expire = (data.payment && data.payment.expire) || 0
     formData.payUrl = (data.payment && data.payment.payUrl) || ''
     formData.token = (data.payment && data.payment.token) || ''
+    formData.domainPrice = data.domainPrice || 0
   } else {
     Message.error(message)
   }
   state.loading = true
   let res = await SystemApi.getTron()
   state.loading = false
-  formData.apiKey = res.data.apiKey
-  formData.proxy = res.data.proxy
-  formData.timeout = res.data.timeout
-  formData.cron_second = res.data.cron_second
-  formData.tron_network = res.data.tron_network
+  formData.apiKey = res.data?.apiKey
+  formData.proxy = res.data?.proxy
+  formData.timeout = res.data?.timeout
+  formData.cron_second = res.data?.cron_second
+  formData.tron_network = res.data?.tron_network
   if(res.data.tron_network === 'nile') {
     formData.usdtContractAddress = 'TXYZopYRdj2D9XRtbG411XZZ3kM5VkAeBf'
   } else {
@@ -291,13 +305,13 @@ onMounted(() => {
 }
 .title {
   background: #4a90e2;
-  width: 80px;
+  width: 120px;
+  text-align: center;
   color: #fff;
   height: 32px;
   line-height: 32px;
   font-size: 16px;
   font-weight: 600;
-  padding-left: 8px;
   border-radius: 4px;
   margin-bottom: 24px;
   margin-top: 36px;

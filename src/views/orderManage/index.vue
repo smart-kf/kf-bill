@@ -35,6 +35,9 @@
           <a-tag v-if="record.status === 2" color="green">支付成功</a-tag>
           <a-tag v-if="record.status === 3" color="red">失败</a-tag>
         </template>
+        <template v-else>
+          {{ text }}
+        </template>
       </template>
     </a-table>
     <a-pagination size="small" v-model:current="searchParams.page" :total="state.total" @change="onPageChange" show-size-changer show-quick-jumper :show-total="(total) => `共 ${total} 条`" />
